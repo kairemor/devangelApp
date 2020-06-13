@@ -1,0 +1,46 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+<div class="row-fluid">
+
+    <div>
+        {% if current_user.is_authenticated %}
+        <h1>DevAngel Admin</h1>
+        {% else %}
+        {% if form %}
+        <form method="POST" action="">
+            {{ form.hidden_tag() if form.hidden_tag }}
+            {% for f in form if f.type != 'CSRFTokenField' %}
+            <div>
+                {{ f.label }}
+                {{ f }}
+                {% if f.errors %}
+                <ul>
+                    {% for e in f.errors %}
+                    <li>{{ e }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button class="btn btn-default" type="submit">Submit</button>
+        </form>
+        <style>
+            form {
+                max-width: 500px;
+                margin: 0 auto;
+                padding: 40px;
+            }
+            label {
+                display: block;
+            }
+            input {
+                border-radius: 4px;
+                margin-bottom: 15px;
+            }
+        </style>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}
