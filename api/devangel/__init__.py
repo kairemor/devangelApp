@@ -6,7 +6,8 @@ from flask_cors import CORS
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, static_folder='../../build',
+                static_url_path='/', instance_relative_config=True)
     # CORS
     CORS(app)
     secret_key = os.environ.get("DEVANGEL_SECRET_KEY", "dev")
@@ -31,7 +32,8 @@ def create_app(test_config=None):
     # Setup database
     from .models import db, User, Grant, Category, GrantTag
     from .migrations import migrate
-    database_url = os.environ.get("DEVANGEL_DB_URL", "postgresql+psycopg2://localhost:5432/devangel_dev")
+    database_url = os.environ.get(
+        "DEVANGEL_DB_URL", "postgresql+psycopg2://postgres:devangel@devangel.cdsfpnto71mr.us-east-2.rds.amazonaws.com:5432/")
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
@@ -76,5 +78,9 @@ def create_app(test_config=None):
     app.register_blueprint(views.static, url_prefix='')
     from .schema import ma
     ma.init_app(app)
+
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
 
     return app
