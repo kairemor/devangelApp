@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, send_from_directory
 
 static = Blueprint('static', __name__)
 
 
 @static.route('/manifest.json')
 def manifest():
-    return render_template('manifest.json')
+    return send_from_directory('../../build', 'manifest.json')
