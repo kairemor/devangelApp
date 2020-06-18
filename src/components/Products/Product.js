@@ -31,13 +31,15 @@ class Product extends React.Component {
       comments_count,
       categories,
       thumbnail_key,
+      images,
       has_upvoted
     } = this.props.product;
 
     let thumbnailUrl =
       "https://firebasestorage.googleapis.com/v0/b/devangel-dev.appspot.com/o/download%20(14).png?alt=media&token=fa7aeea2-0ef7-4189-b32d-58d066b85174";
     if (thumbnail_key) {
-      thumbnailUrl = `${imgixBaseUrl}/${thumbnail_key}?w=80&h=80&fit=crop`;
+      // thumbnailUrl = `${imgixBaseUrl}/${thumbnail_key}?w=80&h=80&fit=crop`;
+      thumbnailUrl = `${images[0].imageUrl}?w=80&h=80&fit=crop`;
     }
 
     return (
@@ -69,7 +71,7 @@ class Product extends React.Component {
           <div
             className={`productUpvoteContainer ${
               has_upvoted ? "hasUpvoted" : ""
-            }`}
+              }`}
           >
             <button onClick={this.onUpvoteClick}>
               <span className={"productUpvoteButtonText"}>

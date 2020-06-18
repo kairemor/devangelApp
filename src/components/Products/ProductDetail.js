@@ -50,8 +50,8 @@ class ProductDetail extends React.Component {
     const thumbnail_key = product && product.thumbnail_key;
     const relativeDate = product
       ? formatDistanceToNow(new Date(product.created_at), {
-          addSuffix: true
-        })
+        addSuffix: true
+      })
       : "";
     const formattedDate = product
       ? format(new Date(product.created_at), "EEEE, LLLL do yyyy, h:mm a")
