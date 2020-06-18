@@ -33,7 +33,7 @@ def create_app(test_config=None):
     from .models import db, User, Grant, Category, GrantTag
     from .migrations import migrate
     database_url = os.environ.get(
-        "DEVANGEL_DB_URL", "postgresql+psycopg2://postgres:devangel123@dbinstance.cdsfpnto71mr.us-east-2.rds.amazonaws.com:5432/")
+        "DEVANGEL_DB_URL", "postgresql+psycopg2://postgres:devangel123@devangel-api.cdsfpnto71mr.us-east-2.rds.amazonaws.com:5432/")
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
