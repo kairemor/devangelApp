@@ -41,7 +41,8 @@ def generate_s3_upload_request():
     bucket_name = current_app.config["S3_BUCKET_NAME"]
     response = s3.generate_presigned_post(bucket_name, key,
                                           Conditions=[{"acl": "public-read"},
-                                                      ["content-length-range", 10, 2000000],
+                                                      ["content-length-range",
+                                                          10, 2000000],
                                                       ["starts-with", "$Content-Type", ""]],
                                           Fields={"acl": "public-read"})
     return response
@@ -91,7 +92,8 @@ class UserRegisterResource(Resource):
         errors = user_schema.validate(json_data)
         if errors:
             return {"status": "error", "data": errors}, 422
-        existing_username = User.query.filter_by(username=json_data['username']).first()
+        existing_username = User.query.filter_by(
+            username=json_data['username']).first()
         existing_email = User.query.filter_by(email=json_data['email']).first()
         errors = []
         if existing_username:
@@ -103,7 +105,7 @@ class UserRegisterResource(Resource):
         new_user = User(
             username=json_data['username'],
             email=json_data['email'],
-            password=guard.hash_password(json_data['password'])
+            password=json_data['password']
         )
         db.session.add(new_user)
         db.session.commit()
@@ -118,7 +120,8 @@ class UserLoginResource(Resource):
         errors = user_login_schema.validate(json_data)
         if errors:
             return {"status": "error", "data": errors}, 422
-        user = guard.authenticate(username=json_data['email'], password=json_data['password'])
+        user = guard.authenticate(
+            username=json_data['email'], password=json_data['password'])
         return {'access_token': guard.encode_jwt_token(user), 'user_details': user_schema.dump(user)}, 200
 
 
@@ -159,14 +162,16 @@ class ProductListResource(Resource):
         page = request.args.get('page', 1, type=int)
         items_per_page = 15
         all_products = Product.query
-        all_products = all_products.order_by(Product.created_at.desc()).paginate(page, items_per_page).items
+        all_products = all_products.order_by(
+            Product.created_at.desc()).paginate(page, items_per_page).items
         all_categories = ProductCategory.query.all()
         current_user = user
         product_ids = [product.id for product in all_products]
         if current_user:
             user_product_upvotes = ProductUpvote.query.filter(ProductUpvote.user_id == current_user.id,
                                                               ProductUpvote.product_id.in_(product_ids)).all()
-            upvoted_product_ids = [upvote.product_id for upvote in user_product_upvotes]
+            upvoted_product_ids = [
+                upvote.product_id for upvote in user_product_upvotes]
             for product in all_products:
                 if product.id in upvoted_product_ids:
                     product.has_upvoted = True
@@ -201,7 +206,8 @@ class ProductListResource(Resource):
         )
 
         for category in categories:
-            get_category = ProductCategory.query.filter_by(name=category).first()
+            get_category = ProductCategory.query.filter_by(
+                name=category).first()
             if get_category:
                 product.categories_relationship.append(get_category)
 
@@ -221,7 +227,8 @@ class ProductUpvoteResource(Resource):
             product.upvotes_count = Product.upvotes_count - 1
             db.session.delete(existing_upvote)
         else:
-            product_upvote = ProductUpvote(product_id=product.id, user_id=flask_praetorian.current_user().id)
+            product_upvote = ProductUpvote(
+                product_id=product.id, user_id=flask_praetorian.current_user().id)
             product.upvotes_count = Product.upvotes_count + 1
             db.session.add(product_upvote)
         db.session.commit()
