@@ -83,8 +83,8 @@ class ProductDetail extends React.Component {
                   <img src={thumbnailUrl} />
                   <div className={"productNameContainer"}>
                     <h2 className={"productDetailsName"}>{product.name}</h2>
-                    <h4 className={"productDetailsDescription"}>
-                      {product.description || product.highlight}
+                    <h4 className={"productDetailsDescription"} dangerouslySetInnerHTML={{ __html: product.description || product.highlight }}>
+
                     </h4>
                     <div className={"productDetailsTagsContainer"}>
                       {product.categories.map(category => (
